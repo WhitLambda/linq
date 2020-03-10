@@ -46,3 +46,31 @@ Open a browser and go to http://localhost:8000 to view.
 
 - `deactivate`:
 Deactivates the virtual environment.
+
+### Local PostgreSQL database setup
+[ instructions are for windows, might be different for mac ]
+- install postgresql binary from official website
+- set password for (superuser) postgres   [ save it somewhere ]
+- install python
+- $ pip install psycopg2
+
+references:
+https://courses.cs.washington.edu/courses/csep544/11au/resources/postgresql-instructions.html
+https://www.jetbrains.com/help/datagrip/connecting-to-a-database.html#connect-to-postgresql-database
+
+- $ createdb -U postgres <db_name>                 [ create new database as postgres superuser ]
+- $ psql -U postgres <db_name>                        [ connect to database ]
+[ you need to be connected to the db in a terminal to use it in DataGrip ]
+
+[ I recommend using JetBrains DataGrip for a more visual access to the database ]
+- install JetBrains DataGrip (make a student account for free access)
+
+connecting to datagrip:
+- make sure psql is connected to the database in a console/terminal
+- $ psql -U postgres <db_name>
+- open datagrip
+- menu > file > new > data source > postgresql
+- change [database:] to <db_name>
+- test connection
+- ok
+- database should load into datagrip
