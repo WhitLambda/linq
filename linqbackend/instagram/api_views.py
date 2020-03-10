@@ -14,3 +14,7 @@ class BorrowedViewset(viewsets.ModelViewSet):
         queryset = models.Borrowed.objects.all()
         serializer_class = serializers.BorrowedSerializer
 
+class IGCommentsViewset(viewsets.ModelViewSet):
+        queryset = models.Instagram_Comments.objects.all()
+        serializer_class = serializers.IGCommentsSerializer
+

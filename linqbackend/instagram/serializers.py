@@ -15,3 +15,8 @@ class BorrowedSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.Borrowed
         fields = ('id', 'what', 'to_who', 'when', 'returned')
+
+class IGCommentsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = models.Instagram_Comments
+        fields = ('username', 'message')
