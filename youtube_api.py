@@ -19,7 +19,9 @@ def main():
 
     api_service_name = "youtube"
     api_version = "v3"
-    client_secrets_file = "client_secrets.json"
+
+    #Download json file from the google project
+    client_secrets_file = ""
 
     # Get credentials and create an API client
     flow = google_auth_oauthlib.flow.InstalledAppFlow.from_client_secrets_file(
@@ -36,7 +38,8 @@ def main():
 
     print(response)
 
-    DEVELOPER_KEY = "YOUR_API_KEY"
+    #Download from the google project
+    DEVELOPER_KEY = ""
 
     youtube = googleapiclient.discovery.build(
         api_service_name, api_version, developerKey = DEVELOPER_KEY)
