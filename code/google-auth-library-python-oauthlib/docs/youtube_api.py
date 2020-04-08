@@ -21,7 +21,7 @@ def main():
     api_version = "v3"
 
     #Download json file from the google project
-    client_secrets_file = ""
+    client_secrets_file = "client_secret_420065976324-nsguat4ftgvgmi4m3gaa3lokl3hi8prj.apps.googleusercontent.com.json"
 
     # Get credentials and create an API client
     flow = google_auth_oauthlib.flow.InstalledAppFlow.from_client_secrets_file(
@@ -29,8 +29,7 @@ def main():
     credentials = flow.run_console()
     youtube = googleapiclient.discovery.build(
         api_service_name, api_version, credentials=credentials)
-    
-    #gets information for dummy youtube channel
+
     request = youtube.channels().list(
         part="snippet,contentDetails,statistics",
         mine=True
@@ -40,9 +39,8 @@ def main():
     print(response)
 
     #Download from the google project
-    DEVELOPER_KEY = ""
-    
-    #access developer's account
+    DEVELOPER_KEY = "AIzaSyDgF_oWHaXjNfpzqNpfYWRdeROD68H8Xnw"
+
     youtube = googleapiclient.discovery.build(
         api_service_name, api_version, developerKey = DEVELOPER_KEY)
 
@@ -52,15 +50,8 @@ def main():
     )
     response = request.execute()
 
-    #prints comment text
-    for dictionary in response['items']:
-        for key, value in dictionary.items():
-            if key  == 'snippet':
-                newDict = dictionary[key]
-                print(newDict['textDisplay'])
-    #prints all data
     print(response)
-   
+
 if __name__ == "__main__":
     main()
 
