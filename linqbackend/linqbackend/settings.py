@@ -39,7 +39,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'instagram',
-    'background_task'
+    'background_task',
+    'users'
 ]
 
 MIDDLEWARE = [
@@ -54,10 +55,15 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'linqbackend.urls'
 
+LOGIN_REDIRECT_URL = 'user_view'            # might not need this later
+LOGOUT_REDIRECT_URL = 'user_view'
+
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [
+            os.path.join(BASE_DIR, 'users','templates')
+        ],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -86,6 +92,23 @@ DATABASES = {
         'PORT': '5432',
     }
 }
+# # amon's database settings
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql',
+#         'NAME': 'gt_linqcomments',
+#         'USER': 'gt_linq',
+#         'PASSWORD': 'gt_lambda1',
+#         'HOST': '127.0.0.1',
+#         'PORT': '5432',
+#     }
+# }
+
+
+#Authentication backends
+AUTHENTICATION_BACKENDS = (
+        'django.contrib.auth.backends.ModelBackend',
+    )
 
 
 # Password validation
@@ -125,3 +148,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.0/howto/static-files/
 
 STATIC_URL = '/static/'
+
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'users', 'static'),
+]
