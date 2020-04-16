@@ -7,3 +7,4 @@ def request_instagram():
 	#	GET last ~20 Instagram posts
 	#	for (comment : comments):
 	#		POST comment to Linq API (overwrite)
+

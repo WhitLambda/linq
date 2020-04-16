@@ -1,5 +1,7 @@
 from rest_framework import routers
-from instagram import api_views as myapp_views
+from instagram.api_views import IGCommentsViewset
+from youtube.api_views import YTCommentsViewset
 
 router = routers.DefaultRouter()
-router.register(r'instagram_comments', myapp_views.IGCommentsViewset)
+router.register(r'instagram_comments', IGCommentsViewset)
+router.register(r'youtube_comments', YTCommentsViewset)

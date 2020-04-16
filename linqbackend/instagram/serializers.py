@@ -1,7 +1,7 @@
 from rest_framework import serializers
-from . import models
+from .models import Comments
 
 class IGCommentsSerializer(serializers.ModelSerializer):
     class Meta:
-        model = models.Instagram_Comments
+        model = Comments
         fields = ('username', 'message')
