@@ -121,4 +121,11 @@ dmypy.json
 # Visual Studio Code
 .vscode/
 
+# Virtual Environments
+WinVenv/
+linq-venv/
+
+# Secrets
+client_secrets_file.json
+
 # End of https://www.gitignore.io/api/django
