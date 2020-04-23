@@ -38,9 +38,10 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
-    'instagram',
-    'youtube'
     'background_task',
+
+    'instagram',
+    'youtube',
     'users'
 ]
 
@@ -58,6 +59,8 @@ ROOT_URLCONF = 'linqbackend.urls'
 
 LOGIN_REDIRECT_URL = 'user_view'            # might not need this later
 LOGOUT_REDIRECT_URL = 'user_view'
+
+CELERY_BROKER_URL = 'amqp://localhost'
 
 TEMPLATES = [
     {
