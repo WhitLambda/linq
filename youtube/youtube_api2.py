@@ -227,7 +227,7 @@ def save_comments(service, **kwargs):
         newComments = []
         if len(comments) > 20:
             #get latest 20 comments
-            for c in range(0, 19):
+            for c in range(0, 20):
                 newComments.append(comments[c])
             comments = newComments
     
