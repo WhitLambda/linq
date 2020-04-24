@@ -68,7 +68,7 @@ def get_videos(service, **kwargs):
 
     max_pages = 5
 
-    while results and i < max_pages:
+    while results and i < max_pages and len(final_results) < 20:
 
         final_results.extend(results['items'])
 
@@ -227,7 +227,7 @@ def save_comments(service, **kwargs):
         newComments = []
         if len(comments) > 20:
             #get latest 20 comments
-            for c in range(len(comments) - 20, len(comments) ):
+            for c in range(0, 19):
                 newComments.append(comments[c])
             comments = newComments
     
