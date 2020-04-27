@@ -9,6 +9,31 @@ import xml.etree.ElementTree as ET
 import json
 from twitchio.ext import commands
 
+def write_to_xml(mes, twitch_data, count, myfile):
+
+    
+
+
+    message = ET.SubElement(twitch_data, 'message')
+
+        # set the name with a counter and increment after we append
+
+    message.set('name','message' + str(count))
+
+    count += 1
+
+    message.text = mes
+
+
+
+    # Create a new XML file with the results
+
+    mydata = ET.tostring(twitch_data, encoding = "unicode")
+
+    myfile.write(mydata)
+    return count
+
+    
 
 
 def message_to_db(message):
@@ -29,55 +54,11 @@ def message_to_db(message):
 
         # Post to the DB now
 
-        json_request = json.dumps(message_data)
+    json_request = json.dumps(message_data)
 
-        print(json_request)
-
-
+    print(json_request)
 
 
-
-# Gets all the comments from every video and saves them to an XML file called 'comments.xml'
-
-def save_comments(service, **kwargs):
-
-    # Get videos and then search each video for 'parent comments'
-
-    results = get_videos(service, **kwargs)
-
-    final_result = []
-
-    for item in results:
-
-        title = item['snippet']['title']
-
-        video_id = item['id']['videoId']
-
-        channel_id = item['snippet']['channelId']
-
-        comments = get_video_comments(service, part='snippet', videoId=video_id, textFormat='plainText')
-
-        newComments = []
-        if len(comments) > 20:
-            #get latest 20 comments
-            for c in range(0, 20):
-                newComments.append(comments[c])
-            comments = newComments
-    
-
-        # Append comments to a list for the XML writing
-
-        final_result.extend([(video_id, title, channel_id, comment) for comment in comments])
-
-        # test code
-        
-    print(comments)
-
-
-
-    comments_to_db(final_result)
-
-   # write_to_xml(comments)
 
 
 
@@ -101,6 +82,7 @@ async def event_ready():
 async def event_message(mes):
     print (mes.content)
     message_to_db(mes)
+    count = write_to_xml(mes, twitch_data, count, myfile)
     await testbot.handle_commands(mes)
     
     
@@ -113,4 +95,7 @@ async def event_message(mes):
 
 if __name__ == "__main__":
     twitch_data = ET.Element('twitch_data')
+    count = 1
+    myfile = open(r"twitch_messages.xml", 'a')
     testbot.run()
+    myfile.close()
