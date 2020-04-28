@@ -3,9 +3,9 @@
 # https://developers.google.com/explorer-help/guides/code_samples#python
 import os
 import json
+import requests
 import google.oauth2.credentials 
 import xml.etree.ElementTree as ET
-from django.http import HttpRequest
 from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
 from google.auth.transport.requests import Request
