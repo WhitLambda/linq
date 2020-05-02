@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'background_task',
+    'corsheaders',
 
     'instagram',
     'youtube',
@@ -60,7 +61,13 @@ ROOT_URLCONF = 'linqbackend.urls'
 LOGIN_REDIRECT_URL = 'user_view'            # might not need this later
 LOGOUT_REDIRECT_URL = 'user_view'
 
+# for hourly/periodic tasks
 CELERY_BROKER_URL = 'amqp://localhost'
+
+# for allowing connection from react
+CORS_ORIGIN_WHITELIST = [
+    'https://localhost:3000/',           # default react port
+]
 
 TEMPLATES = [
     {

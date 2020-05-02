@@ -1,0 +1,14 @@
+# run django server
+python manage.py runserver
+
+
+@celery @windows
+# RUN CELERY WORKER PROCESS
+$ celery -A <proj_name> worker --pool=solo -l info                  #  --pool=solo  is for windows
+
+# RUN CELERY BEAT
+$ celery -A <proj_name> beat --pidfile= -l info
+
+# RUN FLOWER TASK MANAGER DASHBOARD
+$ celery -A <proj_name> flower
+go to localhost:5555/dashboard
