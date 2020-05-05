@@ -8,9 +8,11 @@ import os
 import xml.etree.ElementTree as ET
 import json
 from twitchio.ext import commands
+import utils
 import global_constants as gc
-#import controller_message as cm
-#import controller_database as dbc
+import controller_message as cm
+import controller_database as dbc
+import utils
 import linecache
 import random
 import re
@@ -23,40 +25,58 @@ from datetime import timedelta
 from string import ascii_lowercase
 
 
-# Function: print_exception
-# Prints exception messages
-# Parameters:
-#   ex      -- the exception to print
-#   unique  -- a unique value to track the location of the exception
-def print_exception(ex, unique=''):
-    # Get the exception information
-    exc_type, exc_obj, tb = sys.exc_info()
-    f = tb.tb_frame
-    lineno = tb.tb_lineno
-    filename = f.f_code.co_filename
-    linecache.checkcache(filename)
-    line = linecache.getline(filename, lineno, f.f_globals)
-    # Print the exception
-    print('')
-    print(gc.PRINT_LINE_BREAK)
-    print('~ ' + str(exc_type))
-    print('~ ' + str(filename))
-    print('~ LINE: ' + str(lineno))
-    print('~ CODE: ' + str(line.strip()))
-    print('~ ERROR: ' + str(exc_obj))
-    print('~ TIME: ' + str(datetime.now()))
-    if unique != '':
-        unique_list = str(unique).split('\r\n')
-        if len(unique_list) > 0:
-            print('~ REFERENCE:')
-            for strings in unique_list:
-                print('~ ' + strings.replace('\r\n', ''))    
-        else:
-            print('~ REFERENCE: ' + str(unique))        
-    print(gc.PRINT_LINE_BREAK)
-    print(gc.PRINT_LINE_BREAK)
-    print('')
 
+async def handle_user_message(c, db, message_ref):
+    username = message_ref.author.name
+    message = message_ref
+        # Print the function call
+        #utils.o_print("handle_user_message: username=" + str(username), True)
+        # Check for a ghost user
+        #if username.startswith(gc.TWITCH_CONTROLLER_GHOST_USERNAME):
+            # Check for a message trigger
+            #self.check_for_message_trigger( message)
+            # Check for custom commands
+            #self.handle_user_command( message)
+            # Do nothing else with ghost users
+            #return
+    db.insert_user_message(message.author.name, message.content)
+        # Wrap the function in a try statement
+    try:
+            # Log username
+            #self.save_username_to_db(username)
+            # Save message to datatable
+        message_to_db(message)
+            # Check for banned words
+        if utils.contains_profanity(message.content):
+                # Print the message contains profanity
+                #utils.o_print("message has triggered 'contains profanity' -> timeout_user_yes_ban()")
+                # Timeout or ban the user, timeout process deletes their messages
+                #self.timeout_user_yes_ban(username)
+                # Tell the user
+            await message_ref.channel.send.send(f"@ {username} Please do not use profanity in chat. Do it enough times an you will be banned.")
+        elif utils.contains_timeout_word(message.content):
+                # Print the message contains timeout words
+                #utils.o_print("message has triggered 'contains timeout word' -> timeout_user_no_ban()")
+                # Timeout or ban the user, timeout process deletes their messages
+                #self.timeout_user_no_ban(username)
+                # Tell the user
+            await message_ref.channel.send.send(f"@{username}Please take care with what words you use. Certain topics are better suited for other places.")                       
+        elif utils.contains_self_promo(message.content):
+                # Print the message contains self promotion
+                #utils.o_print("message has triggered 'contains self promotion' -> timeout_user_yes_ban()")
+                # Timeout or ban the user, timeout process deletes their messages
+                #self.timeout_user_yes_ban(username)
+                # Tell the user
+            await message_ref.channel.send(f"@{username} Please do not promote other channels/products/etc. in chat.")                       
+        else:
+                # Check for a message trigger
+            c.check_for_message_trigger(message)
+                # Check for custom commands
+            c.handle_user_command( message)
+    except KeyboardInterrupt as ki:
+        utils.print_exception( 'handle_user_message')
+    except Exception as e:
+        utils.print_exception( 'handle_user_message')
 
 
 def write_to_xml(mes, twitch_data, myfile):
@@ -104,9 +124,9 @@ def message_to_db(message):
 
         # Post to the DB now
 
-    json_request = json.dumps(message_data)
+    #json_request = json.dumps(message_data)
 
-    print(json_request)
+    #print(json_request)
 
 
 
@@ -138,12 +158,14 @@ async def event_ready():
 
 @testbot.event
 async def event_message(mes):
-    #d = dbc.ControllerDatabase()
-    #c = cm.ControllerHUB(dbc= d, tbot = testbot, event = testbot.event)
+    d = dbc.ControllerDatabase()
+    c = cm.ControllerHUB(dbc= d, tbot = testbot, event = testbot.event)
     myfile = open(r"twitch_messages.xml", 'a')
+    #c.start_managing_messages()
+    await handle_user_message(c,d, mes)
     print('chat-bot: Received message from @' + mes.author.name + ':')
     print (mes.content)
-    #c.message_list.append(mes)
+    c.message_list.append(mes)
     message_to_db(mes)
     write_to_xml(mes, twitch_data, myfile)
     await testbot.handle_commands(mes)
@@ -218,7 +240,7 @@ async def question(mes):
     
 @testbot.event
 async def event_error(error, data):
-    print_exception(error, data)
+    utils.print_exception(error, data)
                
 
 
