@@ -126,9 +126,9 @@ TWITCH_CHAT_MODE_CHANGE_FREQUENCY = 10  # Seconds
 #SYSTEM_MESSAGES_VISIBLE = False
 
 # ALERT CONSTANTS
-#ALERT_TYPE_WS_BB = 'white-square-black-border'
-#ALERT_TYPE_WS_RB = 'white-square-red-border'
-#ALERT_TYPE_WS_GB = 'white-square-green-border'
+ALERT_TYPE_WS_BB = 'white-square-black-border'
+ALERT_TYPE_WS_RB = 'white-square-red-border'
+ALERT_TYPE_WS_GB = 'white-square-green-border'
 
 # TRIGGER CONSTANTS
 TRIGGER_CHECK_PERIOD = 2  # The number of seconds between trigger pulls
