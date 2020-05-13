@@ -66,7 +66,7 @@ CELERY_BROKER_URL = 'amqp://localhost'
 
 # for allowing connection from react
 CORS_ORIGIN_WHITELIST = [
-    'https://localhost:3000/',           # default react port
+    'https://localhost:3000',           # default react port
 ]
 
 TEMPLATES = [
