@@ -7,8 +7,11 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 
 from .models import users, user_socials, user_medias
+from instagram.models import Comments
 from .serializers import user_serializer, user_socials_serializer, user_medias_serializer
 from .forms import signup_form, login_form
+
+
 
 # Create your views here.
 
@@ -20,8 +23,6 @@ class user_view(APIView):
 
     def post(self, request):
         return Response({"message": "user_view post"})
-
-
 
 class signup_view(APIView):
     def get(self, request):
@@ -44,7 +45,6 @@ class signup_view(APIView):
             return Response({
                 "error": form.errors        # https://www.reddit.com/r/django/comments/7pklwd/why_formisvalid_always_returns_false_help/
             })
-
 
 class login_view(APIView):
     def get(self, request):
@@ -72,7 +72,83 @@ class login_view(APIView):
 
 
 
-# current username
+
+
+
+
+
+
+# HAVE THIS AS THE FETCH IN REACT FRONTEND       MAKE IT A POST REQUEST AND PROVIDE THE USERNAME AND PASSWORD
+
+# fetch("http://127.0.0.1:8000/users/reacttest/",
+#     {
+#         method: 'POST',
+#         body: JSON.stringify({'username': 'fff3', 'password': 'fff3'})
+#     })
+#     .then(res => res.json())
+#     .then(
+#     (result) => {
+#         this.setState({
+#             isLoaded: true,
+#             comments: result.comments
+#         });
+#     ...
+
+# IT'S MAKING A POST REQUEST BUT THAT IS NEEDED TO SEND DATA (username, password) TO GET keywords/comments FROM THE DATABASE
+
+class get_keywords_view(APIView):
+    def get(self, request): 
+        pass
+    def post(self, request):
+        data = json.loads(request.body)
+        username = data['username']
+        # password = data['password']
+        # user = authenticate(request, username='fff3', password='fff3')
+        # login(request, user)
+
+        if request.user.is_authenticated:
+            response_body = {}
+            for p in User.objects.filter(username=username):     # username should be unique so it should loop only once
+                response_body['username'] = p.username
+                response_body['email'] = p.email
+                response_body['success'] = 'true'
+            # no keywords yet :(
+            
+            return Response( response_body )
+
+        else:
+            return Response( {"success": "false"} )
+
+class get_comments_view(APIView):
+    def get(self, request):
+        pass
+    def post(self, request):
+        data = json.loads(request.body)
+        username = data['username']
+        # password = data['password']
+        # user = authenticate(request, username='fff3', password='fff3')
+        # login(request, user)
+
+        if request.user.is_authenticated:
+            response_body = {}
+            for p in User.objects.filter(username=username):    # username should be unique so it should loop only once
+                response_body['username'] = p.username
+                response_body['email'] = p.email
+                response_body['success'] = 'true'
+
+            response_body['comments'] = []
+            for igc in Comments.objects.filter(username=username):
+                response_body['comments'].append( 
+                    {
+                        'username': igc.username,
+                        'message': igc.message
+                    }
+                )
+            pprint.pprint(response_body)
+            return Response( response_body )
+
+        else:
+            return Response( {"success": "false"} )
 
 
 
@@ -80,10 +156,19 @@ class login_view(APIView):
 
 
 
-class getkeywords_view(APIView):
+
+
+
+
+
+
+
+
+
+
+class get_keywords_test_view(APIView):
     def get(self, request):
         # get current user and the keywords for that user in the database
-
         return Response(
             {
                 "username": "some_user",
@@ -115,53 +200,12 @@ class getkeywords_view(APIView):
                 ]
             }
         )
-
     def post(self, request):
         pass
 
-# view for user data and keywords
-# and also put request for updating user's keywords
-## example:
-    # {
-    #     "username": "some_user",
-    #     "keywords": [
-    #         {
-    #             "keyword": "stream schedule",
-    #             "responses": [
-    #                 "I'm streaming MWF at 10am",
-    #                 "I stream 3 times a week"
-    #             ],
-    #             "autoreply": true
-    #         },
-    #         {
-    #             "keyword": "nice video",
-    #             "responses": [
-    #                 "Thanks!",
-    #                 "Thank you!"
-    #             ],
-    #             "autoreply": true
-    #         },
-    #         {
-    #             "keyword": "how are you",
-    #             "responses": [
-    #                 "Doing well thanks!",
-    #                 "I'm great, how are you?"
-    #             ],
-    #             "autoreply": true
-    #         }
-    #     ]
-    # }
-
-
-
-
-
-
-class getcomments_view(APIView):
+class get_comments_test_view(APIView):
     def get(self, request):
         # get current user and return all their comments
-        print('getcomments get request made ...')
-
         return Response(
             {
                 "comments": [
@@ -199,115 +243,5 @@ class getcomments_view(APIView):
                 ]
             }
         )
-
     def post(self, request):
         pass
-
-# example:
-    # {
-    # 	"comments": [
-    # 		{
-    # 			"username": "xXdr4g0n_sl4y3rXx",
-    # 			"timestamp": "2020-01-22 22:19:46",
-    # 			"commentId": "1234567890",
-    # 			"commentText": "hey what is your streaming schedule?",
-    # 			"keywords": [
-    # 				"streaming schedule"
-    # 			],
-    # 			"platform": "twitter",
-    # 			"mediaId": "0987654321"
-    # 		},
-    # 		{
-    # 			"username": "fan_of_urs123",
-    # 			"timestamp": "2020-01-11 11:21:45",
-    # 			"commentId": "1234567890",
-    # 			"commentText": "this was a great video!",
-    # 			"keywords": [
-    # 				"great video"
-    # 			],
-    # 			"platform": "youtube",
-    # 			"mediaId": "0987654321"
-    # 		},
-    #     {
-    # 			"username": "CopperCorgi",
-    # 			"timestamp": "2020-04-03 23:58:20",
-    # 			"commentId": "1234567890",
-    # 			"commentText": "Your art is lame >:(",
-    # 			"keywords": [],
-    # 			"platform": "reddit",
-    # 			"mediaId": "0987654321"
-    # 		},
-    # 		{
-    # 			"username": "catzilla",
-    # 			"timestamp": "2020-02-08 19:06:31",
-    # 			"commentId": "1234567890",
-    # 			"commentText": "Where did you get that food?",
-    # 			"keywords": [],
-    # 			"platform": "twitch",
-    # 			"mediaId": "0987654321"
-    # 		},
-    # 		{
-    # 			"username": "fan_of_urs123",
-    # 			"timestamp": "2020-02-03 21:32:04",
-    # 			"commentId": "1234567890",
-    # 			"commentText": "like if you're part of the notification squad!!!",
-    # 			"keywords": [
-    # 				"notification squad"
-    # 			],
-    # 			"platform": "youtube",
-    # 			"mediaId": "0987654321"
-    # 		},
-    # 		{
-    # 			"username": "orangeyouglad",
-    # 			"timestamp": "2020-02-27 00:23:37",
-    # 			"commentId": "1234567890",
-    # 			"commentText": "I like your cat",
-    # 			"keywords": [],
-    # 			"platform": "twitch",
-    # 			"mediaId": "0987654321"
-    # 		},
-    # 		{
-    # 			"username": "xXdr4g0n_sl4y3rXx",
-    # 			"timestamp": "2020-03-22 16:01:23",
-    # 			"commentId": "1234567890",
-    # 			"commentText": "Where do we donate? This is a great video!",
-    # 			"keywords": [
-    # 				"donate",
-    #         "great video"
-    # 			],
-    # 			"platform": "youtube",
-    # 			"mediaId": "0987654321"
-    # 		},
-    # 		{
-    # 			"username": "some_kinda_spam_guy",
-    # 			"timestamp": "2020-02-22 13:15:52",
-    # 			"commentId": "1234567890",
-    # 			"commentText": "sub for sub?",
-    # 			"keywords": [
-    # 				"sub for sub"
-    # 			],
-    # 			"platform": "youtube",
-    # 			"mediaId": "0987654321"
-    # 		},
-    # 		{
-    # 			"username": "double_triple_quad234",
-    # 			"timestamp": "2020-01-23 17:24:33",
-    # 			"commentId": "1234567890",
-    # 			"commentText": "Love this content! Can't wait for more!",
-    # 			"keywords": [],
-    # 			"platform": "twitter",
-    # 			"mediaId": "0987654321"
-    # 		},
-    # 		{
-    # 			"username": "xXdr4g0n_sl4y3rXx",
-    # 			"timestamp": "2020-02-03 01:15:30",
-    # 			"commentId": "1234567890",
-    # 			"commentText": "omg I love you",
-    # 			"keywords": [
-    # 				"I love you"
-    # 			],
-    # 			"platform": "reddit",
-    # 			"mediaId": "0987654321"
-    # 		}
-    # 	]
-    # }
