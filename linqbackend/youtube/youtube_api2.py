@@ -167,8 +167,11 @@ def main():
     service = get_authenticated_service()
     save_comments(service, part="snippet", forMine=True, type="video")
 
-def yt_test_func():
-    print('yt_test_func from outside project is working . \n')
-
 if __name__ == "__main__":
     main()
+
+
+
+
+def yt_test_func():
+    print("hiiiiiiiiii............")

@@ -6,8 +6,12 @@ from django.contrib.auth.models import User
 from rest_framework.views import APIView
 from rest_framework.response import Response
 
+import json
+import pprint
+
 from .models import users, user_socials, user_medias
-from instagram.models import Comments
+from instagram.models import Comments as ig_comments
+from youtube.models import Comments as yt_comments
 from .serializers import user_serializer, user_socials_serializer, user_medias_serializer
 from .forms import signup_form, login_form
 
@@ -129,26 +133,43 @@ class get_comments_view(APIView):
         # user = authenticate(request, username='fff3', password='fff3')
         # login(request, user)
 
-        if request.user.is_authenticated:
-            response_body = {}
-            for p in User.objects.filter(username=username):    # username should be unique so it should loop only once
-                response_body['username'] = p.username
-                response_body['email'] = p.email
-                response_body['success'] = 'true'
+        # if request.user.is_authenticated:
+        response_body = {}
+        for p in User.objects.filter(username=username):    # username should be unique so it should loop only once
+            response_body['username'] = p.username
+            response_body['email'] = p.email
+            response_body['success'] = 'true'
 
-            response_body['comments'] = []
-            for igc in Comments.objects.filter(username=username):
-                response_body['comments'].append( 
-                    {
-                        'username': igc.username,
-                        'message': igc.message
-                    }
-                )
-            pprint.pprint(response_body)
-            return Response( response_body )
+        response_body['comments'] = []
+        for igc in ig_comments.objects.filter(username=username):
+            response_body['comments'].append( 
+                {
+                    "username": igc.username,
+                    "timestamp": "2020-01-22 22:19:46",
+                    "commentId": "1234567890",
+                    "commentText": igc.message,
+                    "keywords": [],
+                    "platform": "instagram",
+                    "mediaId": "11111"
+                }
+            )
+        for ytc in yt_comments.objects.filter(linq_username=username):
+            response_body['comments'].append( 
+                {
+                    "username": ytc.linq_username,
+                    "timestamp": ytc.timestamp,
+                    "commentId": "1234567890",
+                    "commentText": ytc.message,
+                    "keywords": [],
+                    "platform": "youtube",
+                    "mediaId": ytc.video_id
+                }
+            )
+        pprint.pprint(response_body)
+        return Response( response_body )
 
-        else:
-            return Response( {"success": "false"} )
+        # else:
+        #     return Response( {"success": "false"} )
 
 
 
@@ -244,4 +265,40 @@ class get_comments_test_view(APIView):
             }
         )
     def post(self, request):
-        pass
+        return Response(
+            {
+                "comments": [
+                    {
+                        "username": "xXdr4g0n_sl4y3rXx",
+                        "timestamp": "2020-01-22 22:19:46",
+                        "commentId": "1234567890",
+                        "commentText": "hey what is your streaming schedule? aaaaaaaaaaaaaaa",
+                        "keywords": [
+                            "streaming schedule"
+                        ],
+                        "platform": "twitter",
+                        "mediaId": "0987654321"
+                    },
+                    {
+                        "username": "fan_of_urs123",
+                        "timestamp": "2020-01-11 11:21:45",
+                        "commentId": "1234567890",
+                        "commentText": "this was a great video! aaaaaaaaaaaa",
+                        "keywords": [
+                            "great video"
+                        ],
+                        "platform": "youtube",
+                        "mediaId": "0987654321"
+                    },
+                    {
+                        "username": "catzilla",
+                        "timestamp": "2020-02-08 19:06:31",
+                        "commentId": "1234567890",
+                        "commentText": "Where did you get that food? aaaaaaaaaaaaaaaaa",
+                        "keywords": [],
+                        "platform": "twitch",
+                        "mediaId": "0987654321"
+                    },
+                ]
+            }
+        )

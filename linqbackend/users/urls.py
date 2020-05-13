@@ -11,7 +11,7 @@ urlpatterns = [
     path('logout/', auth_views.LogoutView.as_view(), name='logout'),
 
     path('getkeywords/', get_keywords_view.as_view(), name='get_keywords'),
-    path('getcomments/', get_comments_view.as_view(), name='get_comments')
+    path('getcomments/', get_comments_view.as_view(), name='get_comments'),
 
     path('gettestkeywords/', get_keywords_test_view.as_view(), name='get_keywords_test'),
     path('gettestcomments/', get_comments_test_view.as_view(), name='get_comments_test')
