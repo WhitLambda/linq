@@ -82,7 +82,7 @@ class ControllerHUB():
                 await message_ref.channel.send(f"@{username} Please do not promote other channels/products/etc. in chat.")                       
             else:
                 message_ref.content = original_content
-                reply = self.check_for_message_trigger(the_dictionary.keywords, message_ref)
+                reply = self.check_for_message_trigger( message_ref)
                 if len(reply) > 0:
                     await message_ref.channel.send(f'@{username}  {reply}')
     
@@ -289,223 +289,222 @@ class ControllerHUB():
             utils.print_exception(e, 'get_user_comment_ratio')
             return 0
 
-    def get_reply(self, keywords, message_ref):
-        reply_list = []
-        random.seed()
-        username = message_ref.author.name
-        if '((' in keywords[message_ref.content]:
-                        # Check the special case
-                if '((ban))' in keywords[message_ref.content].lower():
-                            #self.bot_ref.ban_user(username) 
-                    self.bot_ref.intial_channels[0].ban(username)                           
-                elif '((timeout_noban))' in keywords[message_ref.content].lower():
-                    self.timeout_user_no_ban(username)
-                elif '((timeout_ban))' in keywords[message_ref.content].lower():
-                    self.timeout_user_yes_ban(username)
-                elif '((timeout_free))' in keywords[message_ref.content].lower():
-                            #self.timeout_user_no_counter(username, 30)
-                    self.bot_ref.initial_channels[0].timeout(username, 30)
-                elif '((timeout_free_30))' in keywords[message_ref.content].lower():
-                            #self.timeout_user_no_counter(username, 30)
-                    self.bot_ref.initial_channels[0].timeout(username, 30)
-                elif '((timeout_free_60))' in keywords[message_ref.content].lower():
-                            #self.timeout_user_no_counter(username, 60)
-                    self.bot_ref.initial_channels[0].timeout(username, 60)
-                elif '((timeout_free_90))' in keywords[message_ref.content].lower():
-                            #self.timeout_user_no_counter(username, 90)
-                    self.bot_ref.initial_channels[0].timeout(username, 90)
-                elif '((timeout_free_300))' in keywords[message_ref.content].lower():
-                            #self.timeout_user_no_counter(username, 300)
-                    self.bot_ref.initial_channels[0].timeout(username, 300)
-                elif '((timeout_free_600))' in keywords[message_ref.content].lower():
-                            #self.timeout_user_no_counter(username, 600)
-                    self.bot_ref.initial_channels[0].timeout(username, 600)
-        for value in keywords[message_ref.content]:
-            reply_list.append(value)
-        index = random.randint(0, len(reply_list) - 1)
-        message_ref.content = reply_list[index]
-        reply = utils.convert_response_keywords(message_ref)
-        return reply
-
-    def check_for_message_trigger(self, keywords, message_ref):
-        message = message_ref.content
-        if message in keywords.keys():
-            reply = self.get_reply(keywords, message_ref).content
-            #await self.get_send_message_trigger_response(message_ref.author.name, message_ref)
-            return reply
-        else:
-            message_ref.content = utils.reduce_text_to_minimum(message_ref).content
-            if message_ref.content in keywords.keys():
-                reply = self.get_reply(keywords, message).content
-                #self.get_send_message_trigger_response(message_ref.author.name, message_ref)
-                return reply
-            else:
-                message_ref.content = utils.translate_text_to_minimum(message_ref).content
-                if message_ref.content in keywords.keys():
-                    reply = self.get_reply(keywords, message).content
-                    #self.get_send_message_trigger_response(message_ref.author.name, message_ref)
-                    return reply
-                else:
-                    return ""
-
-
-    
-    #def check_for_message_trigger(self, message_ref):
-        #utils.o_print('message-controller: check_for_message_trigger(username=' + str(username) + ')', True)
-        # Check for exact triggers
+    #def get_reply(self, keywords, message_ref):
+        #reply_list = []
+        #random.seed()
         #username = message_ref.author.name
-        #message = message_ref.content
-        #response = self.get_send_message_trigger_response(username, message)
-        # Check if a response was found
-        #if response == '':
-            # Check for reduced triggers next
-            #response = self.check_for_message_trigger_reduced(username, message)
-        # Check if a response was found
-        #if response == '':
-            # Check for translated triggers
-            #response = self.check_for_message_trigger_translated(username, message)
-        # Check if a response was found
-        #if response == '':
-            # Remove common sentence starts
-            #message = utils.remove_common_sentence_starts(message)
-            # Check for exact triggers
-            #response = self.get_send_message_trigger_response(username, message)
-        # Check if a response was found
-        #if response == '':
-            # Check for reduced triggers next
-            #response = self.check_for_message_trigger_reduced(username, message)
-        # Check if a response was found
-        #if response == '':
-            # Check for translated triggers
-            #response = self.check_for_message_trigger_translated(username, message)
-        # Check if a response was found
-        #if response == '':
-            # Remove common sentence ends
-           # message = utils.remove_common_sentence_ends(message)
-            # Check for exact triggers
-           # response = self.get_send_message_trigger_response(username, message)
-        # Check if a response was found
-        #if response == '':
-            # Check for reduced triggers next
-            #response = self.check_for_message_trigger_reduced(username, message)
-        # Check if a response was found
-        #if response == '':
-            # Check for translated triggers
-            #response = self.check_for_message_trigger_translated(username, message)
-    
-    #def check_for_message_trigger_reduced(self, username, message_ref):
-        # Get the reduced version of the message
-        #username = message_ref.author.name
-        #message = message_ref.content
-        #message_reduced = utils.reduce_text_to_minimum(message)
-        # Print the translated message
-        #print('    reduced message:')
-        #print('        ' + str(message_reduced).replace('\r\n', '\r\n        '))
-        # Return the response
-        #return self.get_send_message_trigger_response(username, message_reduced)
-    
-    #def check_for_message_trigger_translated(self, username, message):
-        # Get the translated version of the message
-        #message_translated = utils.translate_text_to_minimum(message)
-        # Print the translated message
-        #print('    translated message:')
-        #print('        ' + str(message_translated).replace('\r\n', '\r\n        '))
-        # Return the response
-        #return self.get_send_message_trigger_response(username, message_translated)
-    
-    #async def get_send_message_trigger_response(self, username, message_ref):
-        #message = message_ref.content
-        # Wrap the function in a try statement
-        #try:
-            # Set initial value
-           #response_to_send = ''
-            #available_responses = list([])
-            # Make message lowercase
-            #message = message.lower()
-            # Check if there is a trigger
-            #mt_id = self.dbc_ref.get_table_row_column('messages_triggers', 'mt_id', 'message_text', message, self.dbc_ref.DBNAME)
-            # Check for an id
-            #if str(mt_id) != 'None':
-                # Create a list of potential responses
-            #responses = self.dbc_ref.get_table_rows('messages_triggers_responses', 'mt_id', mt_id, '', self.dbc_ref.DBNAME)
-            #reply = self.get_reply(the_dictionary.keywords, message_ref)
-                # Cycle through all of the responses that match the username's player_type
-                #for row in responses:
-                    # Get variables
-                    #response_text = str(row[1]).strip()
-                    # Check for special case responses
-            #if '((' in response_text:
+        #if '((' in keywords[message_ref.content]:
                         # Check the special case
-                #if '((ban))' in response_text.lower():
+                #if '((ban))' in keywords[message_ref.content].lower():
                             #self.bot_ref.ban_user(username) 
                     #self.bot_ref.intial_channels[0].ban(username)                           
-                #elif '((timeout_noban))' in response_text.lower():
+                #elif '((timeout_noban))' in keywords[message_ref.content].lower():
                     #self.timeout_user_no_ban(username)
-                #elif '((timeout_ban))' in response_text.lower():
+                #elif '((timeout_ban))' in keywords[message_ref.content].lower():
                     #self.timeout_user_yes_ban(username)
-                #elif '((timeout_free))' in response_text.lower():
+                #elif '((timeout_free))' in keywords[message_ref.content].lower():
                             #self.timeout_user_no_counter(username, 30)
                     #self.bot_ref.initial_channels[0].timeout(username, 30)
-                #elif '((timeout_free_30))' in response_text.lower():
+                #elif '((timeout_free_30))' in keywords[message_ref.content].lower():
                             #self.timeout_user_no_counter(username, 30)
                     #self.bot_ref.initial_channels[0].timeout(username, 30)
-                #elif '((timeout_free_60))' in response_text.lower():
+                #elif '((timeout_free_60))' in keywords[message_ref.content].lower():
                             #self.timeout_user_no_counter(username, 60)
                     #self.bot_ref.initial_channels[0].timeout(username, 60)
-                #elif '((timeout_free_90))' in response_text.lower():
+                #elif '((timeout_free_90))' in keywords[message_ref.content].lower():
                             #self.timeout_user_no_counter(username, 90)
                     #self.bot_ref.initial_channels[0].timeout(username, 90)
-                #elif '((timeout_free_300))' in response_text.lower():
+                #elif '((timeout_free_300))' in keywords[message_ref.content].lower():
                             #self.timeout_user_no_counter(username, 300)
                     #self.bot_ref.initial_channels[0].timeout(username, 300)
-                #elif '((timeout_free_600))' in response_text.lower():
+                #elif '((timeout_free_600))' in keywords[message_ref.content].lower():
                             #self.timeout_user_no_counter(username, 600)
                     #self.bot_ref.initial_channels[0].timeout(username, 600)
-                    # Remove text in case
-                #response_text = response_text.replace('((Ban))', '')
-                #response_text = response_text.replace('((ban))', '')
-                #response_text = response_text.replace('((Timeout_NoBan))', '')
-                #response_text = response_text.replace('((timeout_noban))', '')
-                #response_text = response_text.replace('((Timeout_Ban))', '')
-                #response_text = response_text.replace('((timeout_ban))', '')
-                #response_text = response_text.replace('((Timeout_Free))', '')
-                #response_text = response_text.replace('((timeout_free))', '')
-                #esponse_text = response_text.replace('((Timeout_Free_30))', '')
-                #response_text = response_text.replace('((timeout_free_30))', '')
-                #response_text = response_text.replace('((Timeout_Free_60))', '')
-                #response_text = response_text.replace('((timeout_free_60))', '')
-                #response_text = response_text.replace('((Timeout_Free_90))', '')
-                #response_text = response_text.replace('((timeout_free_90))', '')
-                #response_text = response_text.replace('((Timeout_Free_300))', '')
-                #response_text = response_text.replace('((timeout_free_300))', '')
-                #response_text = response_text.replace('((Timeout_Free_600))', '')
-                #response_text = response_text.replace('((timeout_free_600))', '')
-                #response_text = response_text.strip()
+        #for value in keywords[message_ref.content]:
+            #reply_list.append(value)
+        #index = random.randint(0, len(reply_list) - 1)
+        #message_ref.content = reply_list[index]
+        #reply = utils.convert_response_keywords(message_ref)
+        #return reply
+
+    #def check_for_message_trigger(self, keywords, message_ref):
+        #message = message_ref.content
+        #if message in keywords.keys():
+            #reply = self.get_reply(keywords, message_ref).content
+            #await self.get_send_message_trigger_response(message_ref.author.name, message_ref)
+            #return reply
+        #else:
+            #message_ref.content = utils.reduce_text_to_minimum(message_ref).content
+            #if message_ref.content in keywords.keys():
+                #reply = self.get_reply(keywords, message).content
+                #self.get_send_message_trigger_response(message_ref.author.name, message_ref)
+                #return reply
+            #else:
+                #message_ref.content = utils.translate_text_to_minimum(message_ref).content
+                #if message_ref.content in keywords.keys():
+                    #reply = self.get_reply(keywords, message).content
+                    #self.get_send_message_trigger_response(message_ref.author.name, message_ref)
+                    #return reply
+                #else:
+                    #return ""
+
+
     
-                #if response_text != '':
-                    #available_responses.append(response_text)
+    def check_for_message_trigger(self, message_ref):
+        # Check for exact triggers
+        username = message_ref.author.name
+        message = message_ref.content
+        response = self.get_send_message_trigger_response(username,message_ref)
+        # Check if a response was found
+        if response == '':
+            # Check for reduced triggers next
+            response = self.check_for_message_trigger_reduced(username,message_ref)
+        # Check if a response was found
+        if response == '':
+            # Check for translated triggers
+            response = self.check_for_message_trigger_translated(username,message_ref)
+        # Check if a response was found
+        if response == '':
+            # Remove common sentence starts
+            message_ref.content = utils.remove_common_sentence_starts(message_ref.content)
+            # Check for exact triggers
+            response = self.get_send_message_trigger_response(username, message_ref)
+            return response
+        # Check if a response was found
+        if response == '':
+            # Check for reduced triggers next
+            response = self.check_for_message_trigger_reduced(username, message_ref)
+        # Check if a response was found
+        if response == '':
+            # Check for translated triggers
+            response = self.check_for_message_trigger_translated(username, message_ref)
+        # Check if a response was found
+        if response == '':
+            # Remove common sentence ends
+           message_ref.content = utils.remove_common_sentence_ends(message_ref.content)
+            # Check for exact triggers
+           response = self.get_send_message_trigger_response(username, message_ref)
+        # Check if a response was found
+        if response == '':
+            # Check for reduced triggers next
+            response = self.check_for_message_trigger_reduced(username, message_ref)
+        # Check if a response was found
+        if response == '':
+            # Check for translated triggers
+            response = self.check_for_message_trigger_translated(username, message_ref)
+        
+    def check_for_message_trigger_reduced(self, username, message_ref):
+        # Get the reduced version of the message
+        username = message_ref.author.name
+        message_reduced = utils.reduce_text_to_minimum(message_ref)
+        # Print the translated message
+        print('    reduced message:')
+        print('        ' + str(message_reduced.content).replace('\r\n', '\r\n        '))
+        # Return the response
+        return self.get_send_message_trigger_response(username, message_reduced)
+    
+    def check_for_message_trigger_translated(self, username, message_ref):
+        # Get the translated version of the message
+        message_translated = utils.translate_text_to_minimum(message_ref)
+        # Print the translated message
+        print('    translated message:')
+        print('        ' + str(message_translated.content).replace('\r\n', '\r\n        '))
+        # Return the response
+        return self.get_send_message_trigger_response(username, message_translated)
+    
+    async def get_send_message_trigger_response(self, username, message_ref):
+        message = message_ref.content
+        # Wrap the function in a try statement
+        try:
+            # Set initial value
+            response_to_send = ''
+            available_responses = list([])
+            # Make message lowercase
+            message = message.lower()
+            # Check if there is a trigger
+            mt_id = self.dbc_ref.get_table_row_column('messages_triggers', 'mt_id', 'message_text', message, self.dbc_ref.DBNAME)
+            # Check for an id
+            if str(mt_id) != 'None':
+                # Create a list of potential responses
+                responses = self.dbc_ref.get_table_rows('messages_triggers_responses', 'mt_id', mt_id, '', self.dbc_ref.DBNAME)
+            #reply = self.get_reply(the_dictionary.keywords, message_ref)
+                # Cycle through all of the responses that match the username's player_type
+                for row in responses:
+                    # Get variables
+                    response_text = str(row[1]).strip()
+                    # Check for special case responses
+            if '((' in response_text:
+                        # Check the special case
+                if '((ban))' in response_text.lower():
+                            #self.bot_ref.ban_user(username) 
+                    self.bot_ref.intial_channels[0].ban(username)                           
+                elif '((timeout_noban))' in response_text.lower():
+                    self.timeout_user_no_ban(username)
+                elif '((timeout_ban))' in response_text.lower():
+                    self.timeout_user_yes_ban(username)
+                elif '((timeout_free))' in response_text.lower():
+                            #self.timeout_user_no_counter(username, 30)
+                    self.bot_ref.initial_channels[0].timeout(username, 30)
+                elif '((timeout_free_30))' in response_text.lower():
+                            #self.timeout_user_no_counter(username, 30)
+                    self.bot_ref.initial_channels[0].timeout(username, 30)
+                elif '((timeout_free_60))' in response_text.lower():
+                            #self.timeout_user_no_counter(username, 60)
+                    self.bot_ref.initial_channels[0].timeout(username, 60)
+                elif '((timeout_free_90))' in response_text.lower():
+                            #self.timeout_user_no_counter(username, 90)
+                    self.bot_ref.initial_channels[0].timeout(username, 90)
+                elif '((timeout_free_300))' in response_text.lower():
+                            #self.timeout_user_no_counter(username, 300)
+                    self.bot_ref.initial_channels[0].timeout(username, 300)
+                elif '((timeout_free_600))' in response_text.lower():
+                            #self.timeout_user_no_counter(username, 600)
+                    self.bot_ref.initial_channels[0].timeout(username, 600)
+                    # Remove text in case
+                response_text = response_text.replace('((Ban))', '')
+                response_text = response_text.replace('((ban))', '')
+                response_text = response_text.replace('((Timeout_NoBan))', '')
+                response_text = response_text.replace('((timeout_noban))', '')
+                response_text = response_text.replace('((Timeout_Ban))', '')
+                response_text = response_text.replace('((timeout_ban))', '')
+                response_text = response_text.replace('((Timeout_Free))', '')
+                response_text = response_text.replace('((timeout_free))', '')
+                response_text = response_text.replace('((Timeout_Free_30))', '')
+                response_text = response_text.replace('((timeout_free_30))', '')
+                response_text = response_text.replace('((Timeout_Free_60))', '')
+                response_text = response_text.replace('((timeout_free_60))', '')
+                response_text = response_text.replace('((Timeout_Free_90))', '')
+                response_text = response_text.replace('((timeout_free_90))', '')
+                response_text = response_text.replace('((Timeout_Free_300))', '')
+                response_text = response_text.replace('((timeout_free_300))', '')
+                response_text = response_text.replace('((Timeout_Free_600))', '')
+                response_text = response_text.replace('((timeout_free_600))', '')
+                response_text = response_text.strip()
+    
+                if response_text != '':
+                    available_responses.append(response_text)
                 # Check for a response
                 #if len(reply) > 0:
                     # Print the available responses
-                    #utils.o_print('        available_responses (' + str(len(available_responses)) + '): ' + str(available_responses), False)
+    
                     # Select a random response
-                    #response_index = (random.randint(1, len(reply)) - 1)
+                    response_index = (random.randint(1, len(available_responses)) - 1)
                     # Print the response index
-                    #utils.o_print('        response_index: ' + str(response_index), False)
+                
                     # Pull the response from the list
-                    #message_ref.content = str(reply[response_index])
+                    message_ref.content = str(available_responses[response_index])
                     # Print the response text
                     #utils.o_print('        response_to_send: ' + str(response_to_send), False)
                     # Print the number of available responses to logs
                     #utils.o_print('message-controller: available_responses: ' + str(available_responses), True, True)
                     # Send the response as a chat message
                 #await message.channel.send(f'@ {username} {utils.convert_response_keywords(message_ref)}')
-        #except KeyboardInterrupt as ki:
-            #utils.print_exception( ki,'get_send_message_trigger_response: username=' + str(username) + ', message=' + str(message))
-        #except Exception as e:
-            #utils.print_exception(e,'get_send_message_trigger_response: username=' + str(username) + ', message=' + str(message))
+        except KeyboardInterrupt as ki:
+            utils.print_exception( ki,'get_send_message_trigger_response: username=' + str(username) + ', message=' + str(message))
+        except Exception as e:
+            utils.print_exception(e,'get_send_message_trigger_response: username=' + str(username) + ', message=' + str(message))
         # Return the response to send, empty if none found
-        #return response_to_send
+        return utils.convert_response_keywords(message_ref)
     
     def timeout_user_yes_ban(self, username):
         # Get the timeout count
@@ -542,7 +541,8 @@ class ControllerHUB():
                 # Subs only mode
                 self.bot_ref.set_subs_only_mode_on()
                 # Slow mode
-                self.bot_ref.set_slow_mode_on(30)
+                #self.bot_ref.set_slow_mode_on(30)
+                self.bot_ref.get_initial_channels[0].slow()
                 # Print the status
                 #utils.o_print('message-controller: Messages(' + str(len(self.message_list)) + '/' + str(gc.TWITCH_CHAT_MODE_THRESHOLD) + ', ' + str(round(float(len(self.message_list)) / float(gc.TWITCH_CHAT_MODE_THRESHOLD), 2)) + '): engaging static game state, subs only chat mode, slow mode 30')
             else:  # Below threshold
@@ -556,17 +556,20 @@ class ControllerHUB():
                     # Set the chat mode
                     self.bot_ref.set_subs_only_mode_on()
                     # Slow mode
-                    self.bot_ref.set_slow_mode_on(15)
+                    #self.bot_ref.set_slow_mode_on(15)
+                    self.bot_ref.get_initial_channels[0].slow()
                 elif length >= self.get_threshold_percentile(0.5):
                     # Set the chat mode
                     self.bot_ref.set_subs_only_mode_on()
                     # Slow mode
-                    self.bot_ref.set_slow_mode_on(10)
+                    #self.bot_ref.set_slow_mode_on(10)
+                    self.bot_ref.get_initial_channels[0].slow()
                 elif length >= self.get_threshold_percentile(1):
                     # Set the chat mode
                     self.bot_ref.set_subs_only_mode_on()
                     # Slow mode
-                    self.bot_ref.set_slow_mode_on(5)
+                    #self.bot_ref.set_slow_mode_on(5)
+                    self.bot_ref.get_initial_channels.slow(0)
                 elif length >= self.get_threshold_percentile(1.5):
                     # Set the chat mode
                     self.bot_ref.set_subs_only_mode_on()
@@ -586,7 +589,8 @@ class ControllerHUB():
                     # Set the chat mode
                     self.bot_ref.set_follower_only_mode_on(1, 'hour')
                     # Slow mode
-                    self.bot_ref.set_slow_mode_on(5)
+                    #self.bot_ref.set_slow_mode_on(5)
+                    self.bot_ref.initial_channels[0].slow(0)
                 elif length >= self.get_threshold_percentile(4):
                     # Set the chat mode
                     self.bot_ref.set_follower_only_mode_on(1, 'minute')
@@ -596,22 +600,26 @@ class ControllerHUB():
                     # Set the chat mode
                     self.bot_ref.set_follower_only_mode_on(1, 'minute')
                     # Slow mode
-                    self.bot_ref.set_slow_mode_on(10)
+                    #self.bot_ref.set_slow_mode_on(10)
+                    self.bot_ref.initial_channels[0].slow()
                 elif length >= self.get_threshold_percentile(6):
                     # Set the chat mode
                     self.bot_ref.set_follower_only_mode_on(1, 'minute')
                     # Slow mode
-                    self.bot_ref.set_slow_mode_on(5)
+                    #self.bot_ref.set_slow_mode_on(5)
+                    self.bot_ref.initial_channels[0].slow()
                 elif length >= self.get_threshold_percentile(7):
                     # Set the chat mode
                     self.bot_ref.set_follower_only_mode_on(1, 'minute')
                     # Slow mode
-                    self.bot_ref.set_slow_mode_on(3)
+                    #self.bot_ref.set_slow_mode_on(3)
+                    self.bot_ref.initial_channels[0].slow()
                 elif length >= self.get_threshold_percentile(8):
                     # Set the chat mode
                     self.bot_ref.set_follower_only_mode_on(1, 'minute')
                     # Slow mode
-                    self.bot_ref.set_slow_mode_on(1)
+                    #self.bot_ref.set_slow_mode_on(1)
+                    self.bot_ref.initial_channels[0].slow()
                 else:
                     # All viewers mode
                     self.bot_ref.remove_all_chat_modes()
