@@ -12,6 +12,7 @@ import pprint
 from .models import users, user_socials, user_medias
 from instagram.models import Comments as ig_comments
 from youtube.models import Comments as yt_comments
+from twitch.models import Comments as twitch_comments
 from .serializers import user_serializer, user_socials_serializer, user_medias_serializer
 from .forms import signup_form, login_form
 
@@ -158,11 +159,22 @@ class get_comments_view(APIView):
                 {
                     "username": ytc.linq_username,
                     "timestamp": ytc.timestamp,
-                    "commentId": "1234567890",
+                    "commentId": ytc.comment_Id,
                     "commentText": ytc.message,
                     "keywords": [],
                     "platform": "youtube",
                     "mediaId": ytc.video_id
+                }
+            )
+        for tc in twitch_comments.objects.filter(linq_username=username):
+            response_body['comments'].append(
+                {
+                    "username": tc.linq_username,
+                    "timestamp": tc.timestamp,
+                    "commetText": tc.message,
+                    "keywords": [],
+                    "platform": "twitch",
+                    "mediaId": "11111"
                 }
             )
         pprint.pprint(response_body)

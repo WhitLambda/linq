@@ -1023,28 +1023,16 @@ class ControllerDatabase(object):
 
     
     def message_to_db(self, message):
-
         message_data = {}
-
-    
-
         message_data['linq_username'] = 'lambda'
-
         message_data['message'] = message.content
-
         message_data['twitch_username'] = message.author.name
-
         message_data['twitch_userId'] = message.author.id
-
         message_data['timestamp'] = message.timestamp
-
-
-
+        print(json.dumps(message_data))
 
         # Post to the DB now
-
-        #json_request = json.dumps(message_data)
-
-       # print(json_request)
-
-   
+        header = {'Content-type':'application/json', 'Accept':'application/json'}
+        r = requests.post('http://127.0.0.1:8000/api/v1/twitch_comments/', json=message_data, headers=header)
+        print(r.status_code)
+        

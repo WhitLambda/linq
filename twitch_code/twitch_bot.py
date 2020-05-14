@@ -23,8 +23,60 @@ from datetime import date
 from datetime import datetime
 from datetime import timedelta
 from string import ascii_lowercase
-import the_dictionary
 
+
+
+async def handle_user_message(c, db, message_ref):
+    username = message_ref.author.name
+    message = message_ref
+        # Print the function call
+        #utils.o_print("handle_user_message: username=" + str(username), True)
+        # Check for a ghost user
+        #if username.startswith(gc.TWITCH_CONTROLLER_GHOST_USERNAME):
+            # Check for a message trigger
+            #self.check_for_message_trigger( message)
+            # Check for custom commands
+            #self.handle_user_command( message)
+            # Do nothing else with ghost users
+            #return
+    db.insert_user_message(message.author.name, message.content)
+        # Wrap the function in a try statement
+    try:
+            # Log username
+            #self.save_username_to_db(username)
+            # Save message to datatable
+        message_to_db(message)
+            # Check for banned words
+        if utils.contains_profanity(message.content):
+                # Print the message contains profanity
+                #utils.o_print("message has triggered 'contains profanity' -> timeout_user_yes_ban()")
+                # Timeout or ban the user, timeout process deletes their messages
+                #self.timeout_user_yes_ban(username)
+                # Tell the user
+            await message_ref.channel.send.send(f"@ {username} Please do not use profanity in chat. Do it enough times an you will be banned.")
+        elif utils.contains_timeout_word(message.content):
+                # Print the message contains timeout words
+                #utils.o_print("message has triggered 'contains timeout word' -> timeout_user_no_ban()")
+                # Timeout or ban the user, timeout process deletes their messages
+                #self.timeout_user_no_ban(username)
+                # Tell the user
+            await message_ref.channel.send.send(f"@{username}Please take care with what words you use. Certain topics are better suited for other places.")                       
+        elif utils.contains_self_promo(message.content):
+                # Print the message contains self promotion
+                #utils.o_print("message has triggered 'contains self promotion' -> timeout_user_yes_ban()")
+                # Timeout or ban the user, timeout process deletes their messages
+                #self.timeout_user_yes_ban(username)
+                # Tell the user
+            await message_ref.channel.send(f"@{username} Please do not promote other channels/products/etc. in chat.")                       
+        else:
+                # Check for a message trigger
+            c.check_for_message_trigger(message)
+                # Check for custom commands
+            c.handle_user_command( message)
+    except KeyboardInterrupt as ki:
+        utils.print_exception( 'handle_user_message')
+    except Exception as e:
+        utils.print_exception( 'handle_user_message')
 
 
 def write_to_xml(mes, twitch_data, myfile):
@@ -52,33 +104,19 @@ def write_to_xml(mes, twitch_data, myfile):
 
 
 def message_to_db(message):
-
     message_data = {}
-
-    
-
     message_data['linq_username'] = 'lambda'
-
     message_data['message'] = message.content
-
     message_data['twitch_username'] = message.author.name
-
     message_data['twitch_userId'] = message.author.id
-
     message_data['timestamp'] = message.timestamp
+    print(json.dumps(message_data))
 
-
-
-
-        # Post to the DB now
-
-    #json_request = json.dumps(message_data)
-
-    #print(json_request)
-
-
-
-
+    # Post to the DB now
+    header = {'Content-type':'application/json', 'Accept':'application/json'}
+    r = requests.post('http://127.0.0.1:8000/api/v1/twitch_comments/', json=message_data, headers=header)
+    print(r.status_code)
+    
 
 
 testbot = commands.Bot(
@@ -108,10 +146,12 @@ async def event_message(mes):
     d = dbc.ControllerDatabase()
     c = cm.ControllerHUB(dbc= d, tbot = testbot, event = testbot.event)
     myfile = open(r"twitch_messages.xml", 'a')
-    await c.handle_user_message(  mes)
-    c.message_list.append(mes)
+    #c.start_managing_messages()
+    await handle_user_message(c,d, mes)
     print('chat-bot: Received message from @' + mes.author.name + ':')
     print (mes.content)
+    c.message_list.append(mes)
+    message_to_db(mes)
     write_to_xml(mes, twitch_data, myfile)
     await testbot.handle_commands(mes)
   
