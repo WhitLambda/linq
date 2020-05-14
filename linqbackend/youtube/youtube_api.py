@@ -19,9 +19,8 @@ api_version = "v3"
 # Get the user's permission for the app to access their YouTube account. Save credentials to save time on rerun.
 def get_authenticated_service():
     # Secret file from the Google Cloud Credentials landing. WARNING: DO NOT POST TO GITHUB
-    flow = InstalledAppFlow.from_client_secrets_file("./client_secrets_file.json", scopes)
+    flow = InstalledAppFlow.from_client_secrets_file('client_secrets_file.json', scopes)
     credentials = flow.run_console()
-
     # Return the API client using api version and user credentials
     return build(api_service_name, api_version, credentials = credentials)
 
@@ -52,11 +51,12 @@ def get_video_comments(service, **kwargs):
 
     while results:
         for item in results['items']:
+            commentId = item['id']
             comment = item['snippet']['topLevelComment']['snippet']['textDisplay']
             commenter_name = item['snippet']['topLevelComment']['snippet']['authorDisplayName']
             commenter_id = item['snippet']['topLevelComment']['snippet']['authorChannelId']['value']
             last_updated_at = item['snippet']['topLevelComment']['snippet']['updatedAt']
-            comments.extend([(comment, commenter_name, commenter_id, last_updated_at)])
+            comments.extend([(comment, commenter_name, commenter_id, last_updated_at, commentId)])
 
         if 'nextPageToken' in results:
             kwargs['pageToken'] = results['nextPageToken']
@@ -99,7 +99,8 @@ def comments_to_db(final_result):
         comment_data['YT_username'] = result[3][1]
         comment_data['YT_userId'] = result[3][2]
         comment_data['timestamp'] = result[3][3]
-        comment_data['video_id'] = result[idx]
+        comment_data['comment_Id'] = result[3][4]
+        comment_data['video_id'] = result[0]
         # Post to the DB now
         json_request = json.dumps(comment_data)
         print(json_request)
