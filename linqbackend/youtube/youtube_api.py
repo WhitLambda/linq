@@ -132,34 +132,6 @@ def save_comments(service, **kwargs):
    # write_to_xml(comments)
 
 def main():
-    # #gets information for dummy youtube channel
-    # request = service.channels().list(
-    #     part="snippet,contentDetails,statistics",
-    #     mine=True
-    # )
-    # response = request.execute()
-
-    # print(response)
-
-    # #Download from the google project
-    # DEVELOPER_KEY = ""
-
-    # #access developer's account
-    # youtube = googleapiclient.discovery.build(
-    #     api_service_name, api_version, developerKey = DEVELOPER_KEY)
-
-    # response = youtube.comments().list(part="snippet", id="").execute()
-
-    # #prints comment text
-    # for dictionary in response['items']:
-    #     for key, value in dictionary.items():
-    #         if key  == 'snippet':
-    #             newDict = dictionary[key]
-    #             print(newDict['textDisplay'])
-
-    # #prints all data
-    # print(response)
-
     # Disable OAuthlib's HTTPS verification when running locally.
     # When running in production, *DO NOT* leave this option enabled.
     os.environ["OAUTHLIB_INSECURE_TRANSPORT"] = "1"
@@ -169,7 +141,6 @@ def main():
 
 if __name__ == "__main__":
     main()
-
 
 
 

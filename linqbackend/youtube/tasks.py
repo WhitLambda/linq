@@ -1,8 +1,8 @@
 from celery.task import periodic_task
 from celery.schedules import crontab
 
-from .youtube_api2 import yt_test_func
-from .youtube_api2 import main as yt_main_func
+from .youtube_api import yt_test_func
+from .youtube_api import main as yt_main_func
 
 
 @periodic_task(run_every=(crontab(minute='*/2')), name='youtube_task_1', ignore_result=True)
