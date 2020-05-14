@@ -54,6 +54,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
+    'django.middleware.common.CommonMiddleware',
 ]
 
 ROOT_URLCONF = 'linqbackend.urls'
@@ -66,7 +68,7 @@ CELERY_BROKER_URL = 'amqp://localhost'
 
 # for allowing connection from react
 CORS_ORIGIN_WHITELIST = [
-    'https://localhost:3000',           # default react port
+    'http://localhost:3000',           # default react port
 ]
 
 TEMPLATES = [
@@ -103,6 +105,12 @@ DATABASES = {
         'PORT': '5432',
     }
 }
+
+# Lauren's DB settings
+# name: "linqcomments"
+# user: "linq"
+# pw: "linq"
+
 # # amon's database settings
 # DATABASES = {
 #     'default': {
