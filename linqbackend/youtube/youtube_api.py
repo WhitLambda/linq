@@ -132,6 +132,17 @@ def save_comments(service, **kwargs):
     comments_to_db(final_result)
    # write_to_xml(comments)
 
+def send_reply(message, comment_thread_id, service, **kwargs):
+    request = service.comments.insert(part = "snippet",
+    body = {
+         "snippet": {
+             "parentId": comment_thread_id,
+             "textOriginal": message
+
+         }
+     })
+    request.execute()
+    
 def main():
     # Disable OAuthlib's HTTPS verification when running locally.
     # When running in production, *DO NOT* leave this option enabled.
