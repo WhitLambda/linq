@@ -9,9 +9,9 @@ from .youtube_api import main as yt_main_func
 def youtube_task_1():
 
     # this is the actual function to run
-    # yt_main_func()              # getting a """ FileNotFoundError: [Errno 2] No such file or directory: './client_secrets_file.json' """ error
+    yt_main_func()              # getting a """ FileNotFoundError: [Errno 2] No such file or directory: './client_secrets_file.json' """ error
 
     
     # this is just the test function, can be used for debugging
-    yt_test_func()
+    # yt_test_func()
 
