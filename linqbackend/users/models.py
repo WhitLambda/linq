@@ -23,6 +23,14 @@ def save_user_profile(sender, instance, **kwargs):
 
 
 
+class user_keywords(models.Model):
+    linq_username = models.CharField(max_length=100)
+    keyword = models.CharField(max_length=500)
+    responses = models.TextField(blank=True)
+    autoreply = models.CharField(max_length=100)
+
+
+
 
 class user_socials(models.Model):
     # primary key automatically generated as auto-integer field

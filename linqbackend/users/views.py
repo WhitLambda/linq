@@ -9,7 +9,7 @@ from rest_framework.response import Response
 import json
 import pprint
 
-from .models import users, user_socials, user_medias
+from .models import users, user_socials, user_medias, user_keywords
 from instagram.models import Comments as ig_comments
 from youtube.models import Comments as yt_comments
 from twitch.models import Comments as twitch_comments
@@ -111,18 +111,27 @@ class get_keywords_view(APIView):
         # user = authenticate(request, username='fff3', password='fff3')
         # login(request, user)
 
-        if request.user.is_authenticated:
-            response_body = {}
-            for p in User.objects.filter(username=username):     # username should be unique so it should loop only once
-                response_body['username'] = p.username
-                response_body['email'] = p.email
-                response_body['success'] = 'true'
-            # no keywords yet :(
-            
-            return Response( response_body )
+        # if request.user.is_authenticated:
+        response_body = {}
+        for p in User.objects.filter(username=username):     # username should be unique so it should loop only once
+            response_body['username'] = p.username
+            response_body['email'] = p.email
+            response_body['success'] = 'true'
 
-        else:
-            return Response( {"success": "false"} )
+        response_body['keywords'] = []
+        for k in user_keywords.objects.filter(linq_username=username):
+            kwd = {
+                'keyword': k.keyword,
+                'responses': [r for r in k.responses.split(' @@@ ')],
+                'autoreply': k.autoreply
+            }
+            response_body['keywords'].append( kwd )
+        # no keywords yet :(
+        
+        return Response( response_body )
+
+        # else:
+        #     return Response( {"success": "false"} )
 
 class get_comments_view(APIView):
     def get(self, request):
